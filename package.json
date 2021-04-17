@@ -1,0 +1,32 @@
+{
+  "name": "graphimation",
+  "version": "1.0.0",
+  "description": "Animation library for 3D graphics programming tutorials",
+  "dependencies": {
+    "@types/three": "^0.127.1",
+    "gulp": "^4.0.2",
+    "gulp-header": "^2.0.9",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "three": "^0.127.0"
+  },
+  "devDependencies": {
+    "ts-loader": "^8.1.0",
+    "typescript": "^4.2.4",
+    "webpack": "^5.33.2",
+    "webpack-cli": "^4.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bobobot/graphimation.git"
+  },
+  "author": "Bobobot",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bobobot/graphimation/issues"
+  },
+  "homepage": "https://github.com/Bobobot/graphimation#readme",
+  "keywords": []
+}

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as TWEEN from '@tweenjs/tween.js';
 import { IObject2D } from './iobject2d';
 import {Camera2D} from './camera2d'
 
@@ -24,6 +25,7 @@ export class Scene2D {
 		this.animate();
 	}
 
+	//Adds a 2D object (such as a point or a line) to the scene
 	addObject(object: IObject2D): void {
 		this.scene.add(object.getMesh());
 	}
@@ -34,8 +36,9 @@ export class Scene2D {
 	}
 
 	private animate(): void {
-		//the arrow function is a workaround for javascript's weird behavior when it comes to 'this'
+		//bind is a workaround for javascript's weird behavior when it comes to 'this'
 		requestAnimationFrame(this.animate.bind(this));
+		TWEEN.update(); //we update all our interpolations
 		this.renderer.render(this.scene, this.camera.getCamera());
 	}
 }

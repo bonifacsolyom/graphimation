@@ -1,8 +1,13 @@
 import {Scene2D} from './2D/scene2d'
 import {Point2D} from './2D/objects/point2d'
+import { Color, Vector2 } from 'three';
 
 window.onload = function () {
-	var scene2D = new Scene2D(window.innerWidth, window.innerHeight);
-	scene2D.addObject(new Point2D(0, 0, "A"));
+	let scene2D = new Scene2D(window.innerWidth, window.innerHeight);
+	let point = new Point2D(0, 0, "A");
+	scene2D.addObject(point);
 	document.body.appendChild(scene2D.getDomElement());
+	point.changeColor(new Color("red"));
+	point.changePosition(new Vector2(5, 1));
+	point.changeSize(10);
 };

@@ -1,12 +1,14 @@
 import * as THREE from 'three';
-import { Vector2 } from 'three';
-import { IObject2D } from '../iobject2d'
+import * as TWEEN from '@tweenjs/tween.js';
+import { Vector2, Vector3 } from 'three';
+import { IObject2D } from '../iobject2d';
 
 export class Point2D implements IObject2D {
 	position: THREE.Vector2;
 	color: THREE.Color;
 	name: string;
 	private renderRadius: number;
+	private size: number;
 
 	showName: boolean = true;
 	//number of render segments (lower amount makes the edges blockier)
@@ -21,6 +23,8 @@ export class Point2D implements IObject2D {
 		this.name = name;
 		this.color = color;
 		this.renderRadius = renderRadius;
+
+		this.size = 1;
 
 		this.geometry = new THREE.CircleGeometry(renderRadius, this.SEGMENTS);
 		this.material = new THREE.MeshBasicMaterial( {color: color})
@@ -39,14 +43,30 @@ export class Point2D implements IObject2D {
 		throw new Error('Method not implemented.');
 	}
 
-	//TODO: test, may not work. in that case we should use mesh.material instead
-	//		and geometry and material shouldn't even be stored as a class variable
 	changeColor(color: THREE.Color): void {
-		this.material.color.set(color);
+		this.color = color;
+		this.material.color.set(this.color);
 	}
 
-	changeSize(size: number): void {
-		throw new Error('Method not implemented.');
+	changeSize(newSize: number, time: number = 300): void {
+		//We can't simply interpolate between numbers because Tween requires an object
+		const sizeObj = {value: this.size};
+		
+		new TWEEN.Tween(sizeObj).to({value: newSize}, time)
+		.easing(TWEEN.Easing.Cubic.Out)
+		.onUpdate(() => {
+			this.size = sizeObj.value;
+			this.mesh.scale.set(this.size, this.size, 0);
+		}).start();
+		console.log(this.mesh.scale);
+	}
+
+	changePosition(newPos: Vector2, time: number = 300) {
+		new TWEEN.Tween(this.position).to(newPos, time)
+			.easing(TWEEN.Easing.Cubic.Out)
+			.onUpdate(() => {
+				this.mesh.position.set(this.position.x, this.position.y, 0);
+			}).start();
 	}
 	
 	toggleName(): void {

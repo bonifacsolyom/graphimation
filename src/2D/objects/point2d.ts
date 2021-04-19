@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
-import {Vector2 } from 'three';
+import { Vector2 } from 'three';
 import { IObject2D } from '../iobject2d';
 import * as CONVERT from '../../utils/convert'
 
@@ -53,15 +53,16 @@ export class Point2D implements IObject2D {
 			.easing(TWEEN.Easing.Cubic.Out)
 			.onUpdate(() => {
 				this.color.set(CONVERT.HSVToTHREEColor(colorHSV));
-				console.log(this.color)
 				this.material.color.set(this.color);
 			})
 			.start();
 	}
 
-	//Lightens the color of the objects by the given amount
-	private lighten(amount: number) {
-
+	//Changes the brightness of the point by the given amount
+	private changeBrightness(amount: number) {
+		let hsl = CONVERT.THREEColorToHSL(this.color);
+		hsl[2] += amount;
+		this.changeColor(new THREE.Color(CONVERT.HSLToTHREEColor(hsl)));
 	}
 
 	changeSize(newSize: number, time: number = 300): void {
@@ -74,7 +75,7 @@ export class Point2D implements IObject2D {
 		.onUpdate(() => {
 				//We need to update our original value here since sizeObj only has a copy of it that's being modified
 				this.size = sizeObj.value;
-				this.mesh.scale.set(this.size, this.size, 0);
+				this.mesh.scale.set(this.size, this.size, 1);
 			})
 			.start();
 	}

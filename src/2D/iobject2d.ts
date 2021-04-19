@@ -9,6 +9,10 @@ import { Color } from "three";
 
     getMesh(): THREE.Mesh;
 
+    hover(hover: boolean): void;
+
+    click(): void;
+
     //TODO: possibly add size and color parameters, maybe with default values
     //Will highlight the object (for example by enlargening and changing its color a little)
     highlight(): void;

@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import * as TWEEN from "@tweenjs/tween.js";
 import { Vector2 } from "three";
 import { IObject2D } from "./iobject2d";
+import { TweenableNumber, tween } from "../utils/tweening-utils";
 
 export abstract class Object2D implements IObject2D {
 	//The position of the object - not necessarily the center, see getCenter()
@@ -11,9 +11,12 @@ export abstract class Object2D implements IObject2D {
 	//The object's final color and scale will be the sum of the base and the highlight plus
 	protected color: {
 		baseColor: THREE.Color;
-		highlightBrightnessPlus: number;
+		highlightBrightnessPlus: TweenableNumber;
 	};
-	protected scale: { baseScale: number; highlightScalePlus: number };
+	protected scale: {
+		baseScale: TweenableNumber;
+		highlightScalePlus: TweenableNumber;
+	};
 
 	private showName: boolean;
 	private higlightValues = {
@@ -35,11 +38,18 @@ export abstract class Object2D implements IObject2D {
 	) {
 		this.position = new Vector2(x, y);
 		this.name = name;
-		this.color = { baseColor: color, highlightBrightnessPlus: 0 };
+		this.color = {
+			baseColor: color,
+			highlightBrightnessPlus: new TweenableNumber(0),
+		};
 		this.showName = true;
-		this.scale = { baseScale: 1, highlightScalePlus: 0 };
+		this.scale = {
+			baseScale: new TweenableNumber(1),
+			highlightScalePlus: new TweenableNumber(0),
+		};
 		this.hovered = false;
 	}
+	abstract getCenter(): THREE.Vector2;
 
 	//Call this at the end of every child's constructor
 	protected init() {
@@ -77,53 +87,34 @@ export abstract class Object2D implements IObject2D {
 		time: number = 20
 	): void {
 		//interpolate brightness
-		let brightness = {
-			highlightBrightnessPlus: this.color.highlightBrightnessPlus,
-		};
-		let newBrightness = { highlightBrightnessPlus: newHighlightBrightness };
-
-		new TWEEN.Tween(brightness)
-			.to(newBrightness, time)
-			.easing(TWEEN.Easing.Cubic.Out)
-			.onUpdate(() => {
-				this.color.highlightBrightnessPlus =
-					brightness.highlightBrightnessPlus;
-				this.updateMesh();
-			})
-			.start();
+		tween(
+			this.color.highlightBrightnessPlus,
+			newHighlightBrightness,
+			this.updateMesh.bind(this),
+			time
+		);
 
 		//interpolate scale
-		let scale = { highlightScalePlus: this.scale.highlightScalePlus };
-		let newScale = { highlightScalePlus: newHighlightScale };
-		console.log(this.scale);
-
-		new TWEEN.Tween(scale)
-			.to(newScale, time)
-			.easing(TWEEN.Easing.Cubic.Out)
-			.onUpdate(() => {
-				this.scale.highlightScalePlus = scale.highlightScalePlus;
-				this.updateMesh();
-			})
-			.start();
+		tween(
+			this.scale.highlightScalePlus,
+			newHighlightScale,
+			this.updateMesh.bind(this),
+			time
+		);
 	}
 
 	//updates the mesh with this object's data, for example colors and position
 	protected updateMesh() {
 		this.mesh.position.set(this.position.x, this.position.y, 0);
 
-		let newScale = this.scale.baseScale + this.scale.highlightScalePlus;
+		let newScale =
+			this.scale.baseScale.value + this.scale.highlightScalePlus.value;
 		this.mesh.scale.set(newScale, newScale, 1);
 	}
 
 	//Changes the position of the object, interpolating between the old and the new value
 	changePosition(newPos: Vector2, time: number = 300) {
-		new TWEEN.Tween(this.position)
-			.to(newPos, time)
-			.easing(TWEEN.Easing.Cubic.Out)
-			.onUpdate(() => {
-				this.updateMesh();
-			})
-			.start();
+		tween(this.position, newPos, this.updateMesh.bind(this), time);
 	}
 
 	//Changes the color of the object, interpolating between the old and the new value
@@ -133,19 +124,7 @@ export abstract class Object2D implements IObject2D {
 
 	//Changes the scale of the object, interpolating between the old and the new value
 	changeScale(newScale: number, time: number = 300): void {
-		//We can't simply interpolate between numbers because Tween requires an object
-		//Therefore we put our value in a temporary object
-		const sizeObj = { value: this.scale.baseScale };
-
-		new TWEEN.Tween(sizeObj)
-			.to({ value: newScale }, time)
-			.easing(TWEEN.Easing.Cubic.Out)
-			.onUpdate(() => {
-				//We need to update our original value here since sizeObj only has a copy of it that's being modified
-				this.scale.baseScale = sizeObj.value;
-				this.updateMesh();
-			})
-			.start();
+		tween(this.scale.baseScale, newScale, this.updateMesh.bind(this), time);
 	}
 
 	toggleName(): void {

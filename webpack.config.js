@@ -19,12 +19,12 @@ module.exports = {
 	mode: DEV ? "development" : "production",
 	watch: true,
 	watchOptions: {
-        aggregateTimeout: 200,
+		aggregateTimeout: 200,
 		poll: 1000,
 		ignored: /node_modules/,
 	},
-    output: {
-        filename: "bundle.js",
-        path: path.resolve(__dirname, "dist"),
-    },
+	output: {
+		filename: "bundle.js",
+		path: path.resolve(__dirname, "dist"),
+	},
 };

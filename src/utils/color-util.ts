@@ -1,15 +1,15 @@
-import * as CONVERT from 'color-convert';
-import * as THREE from 'three';
+import * as CONVERT from "color-convert";
+import * as THREE from "three";
 
 //H: 0-360
 //S: 0-100
 //V: 0-100
 export function THREEColorToHSV(color: THREE.Color): [number, number, number] {
-	return CONVERT.hex.hsv(color.getHexString())
+	return CONVERT.hex.hsv(color.getHexString());
 }
 
 export function HSVToTHREEColor(hsv: [number, number, number]): THREE.Color {
-	let color = CONVERT.hsv.rgb(hsv)
+	let color = CONVERT.hsv.rgb(hsv);
 	color[0] /= 255;
 	color[1] /= 255;
 	color[2] /= 255;
@@ -17,12 +17,11 @@ export function HSVToTHREEColor(hsv: [number, number, number]): THREE.Color {
 }
 
 export function THREEColorToHSL(color: THREE.Color): [number, number, number] {
-	return CONVERT.hex.hsl(color.getHexString())
+	return CONVERT.hex.hsl(color.getHexString());
 }
 
-
 export function HSLToTHREEColor(hsl: [number, number, number]): THREE.Color {
-	let color = CONVERT.hsl.rgb(hsl)
+	let color = CONVERT.hsl.rgb(hsl);
 	color[0] /= 255;
 	color[1] /= 255;
 	color[2] /= 255;
@@ -38,7 +37,10 @@ export function HSVtoHSL(hsv: [number, number, number]) {
 }
 
 //Changes the brightness of a color by the given amount
-export function changeBrightness(color: THREE.Color, amount: number): THREE.Color {
+export function changeBrightness(
+	color: THREE.Color,
+	amount: number
+): THREE.Color {
 	let hsl = THREEColorToHSL(color);
 	hsl[2] += amount;
 	return HSLToTHREEColor(hsl);

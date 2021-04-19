@@ -1,2 +1,3 @@
 # graphimation
- Animation library for 3D graphics programming tutorials
+
+Animation library for 3D graphics programming tutorials

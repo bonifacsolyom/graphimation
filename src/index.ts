@@ -1,6 +1,6 @@
-import {Scene2D} from './2D/scene2d'
-import {Point2D} from './2D/objects/point2d'
-import { Color, Vector2 } from 'three';
+import { Scene2D } from "./2D/scene2d";
+import { Point2D } from "./2D/objects/point2d";
+import { Color, Vector2 } from "three";
 
 window.onload = function () {
 	let scene2D = new Scene2D(window.innerWidth, window.innerHeight);

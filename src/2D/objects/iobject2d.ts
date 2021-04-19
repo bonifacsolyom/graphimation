@@ -1,6 +1,8 @@
 import * as THREE from "three";
 
-//An interface that represents a drawable 2D object in the scene. Can be a point, line, square etc.
+/**
+ * An interface that represents a drawable 2D object in the scene. Can be a point, line, square etc.
+ */
 export interface IObject2D {
 	getMesh(): THREE.Mesh;
 

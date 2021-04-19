@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Vector2 } from "three";
 import { IObject2D } from "./iobject2d";
-import { TweenableNumber, tween } from "../utils/tweening-utils";
+import { TweenableNumber, tween } from "../../utils/tweening-utils";
 
 export abstract class Object2D implements IObject2D {
 	//The position of the object - not necessarily the center, see getCenter()

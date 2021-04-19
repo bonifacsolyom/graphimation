@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
 import { Vector2 } from "three";
-import { Object2D } from "../object2d";
+import { Object2D } from "./object2d";
 import * as COLOR_UTIL from "../../utils/color-util";
 import { tween } from "../../utils/tweening-utils";
 

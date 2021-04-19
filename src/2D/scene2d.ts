@@ -3,6 +3,7 @@ import * as TWEEN from '@tweenjs/tween.js';
 import { IObject2D } from './iobject2d';
 import {Camera2D} from './camera2d'
 import { Vector2 } from 'three';
+import { Object2D } from './object2d';
 
 export class Scene2D {
 	private scene: THREE.Scene;
@@ -20,10 +21,11 @@ export class Scene2D {
 		this.height = height;
 
 		this.camera = new Camera2D(width, height);
-		this.pointer = new Vector2(0, 0);
+		this.pointer = new Vector2(-1, 1);
 		
 		//set up renderer
-		this.renderer = new THREE.WebGLRenderer();
+		//TODO: only turn on antialias on powerful machines
+		this.renderer = new THREE.WebGLRenderer({antialias: true});
 		this.renderer.setSize(this.width, this.height);
 
 		//set up raycaster
@@ -56,13 +58,22 @@ export class Scene2D {
 		this.renderer.render(this.scene, this.camera.getCamera());
 	}
 
+	private intersectedObject: Object2D | null = null;
 	//Checks if the pointer intersects with any object and if so, calls its highlight function
 	private checkPointerIntersect() {
 		this.raycaster.setFromCamera(this.pointer, this.camera.getCamera())
 		const intersects = this.raycaster.intersectObjects( this.scene.children );
 
-		//TODO: doesn't work
-		// console.log(intersects);
+		if (intersects.length > 0) {
+			var object: Object2D = intersects[0].object.userData.containerObject;
+			if (this.intersectedObject != object) {
+				object.hover(true);
+				this.intersectedObject = object;
+			}
+		} else { //our pointer isn't intersecting with anything
+			this.intersectedObject?.hover(false);
+			this.intersectedObject = null;
+		}
 	}
 
 

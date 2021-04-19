@@ -1,28 +1,18 @@
-import { Color } from "three";
+import * as THREE from "three";
 
 //An interface that represents a drawable 2D object in the scene. Can be a point, line, square etc.
- export interface IObject2D {
-    name: string;
-    color: Color;
-
-    showName: boolean;
-
+export interface IObject2D {
     getMesh(): THREE.Mesh;
 
     hover(hover: boolean): void;
 
     click(): void;
 
-    //TODO: possibly add size and color parameters, maybe with default values
-    //Will highlight the object (for example by enlargening and changing its color a little)
-    highlight(): void;
+    changePosition(newPos: THREE.Vector2, time?: number): void;
 
-    //Will remove the highlight from the object
-    unHighlight(): void;
+    changeColor(color: THREE.Color, time?: number): void;
 
-    changeColor(color: Color): void;
-
-    changeSize(size: number): void;
+    changeScale(newScale: number, time?: number): void;
 
     //Toggles whether the object's name is shown or not
     toggleName(): void;

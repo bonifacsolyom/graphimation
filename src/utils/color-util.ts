@@ -36,3 +36,10 @@ export function HSLtoHSV(hsl: [number, number, number]) {
 export function HSVtoHSL(hsv: [number, number, number]) {
 	return CONVERT.hsv.hsl(hsv);
 }
+
+//Changes the brightness of a color by the given amount
+export function changeBrightness(color: THREE.Color, amount: number): THREE.Color {
+	let hsl = THREEColorToHSL(color);
+	hsl[2] += amount;
+	return HSLToTHREEColor(hsl);
+}

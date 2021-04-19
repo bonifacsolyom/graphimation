@@ -9,5 +9,5 @@ window.onload = function () {
 	document.body.appendChild(scene2D.getDomElement());
 	point.changeColor(new Color("red"), 2000);
 	point.changePosition(new Vector2(5, 1), 2000);
-	point.changeSize(10, 2000);
+	point.changeScale(10, 2000);
 };

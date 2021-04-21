@@ -2,8 +2,10 @@ import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
 import { IObject2D } from "./objects/iobject2d";
 import { Camera2D } from "./camera2d";
-import { Vector2 } from "three";
+import { Vector2, Vector3 } from "three";
 import { Object2D } from "./objects/object2d";
+import { Point2D } from "./objects/point2d";
+import { Axis2D } from "./axis2d";
 
 export class Scene2D {
 	private scene: THREE.Scene;
@@ -11,6 +13,7 @@ export class Scene2D {
 	private renderer: THREE.WebGLRenderer;
 	private raycaster: THREE.Raycaster;
 	private pointer: THREE.Vector2;
+	private axis: Axis2D;
 
 	private width: number;
 	private height: number;
@@ -27,6 +30,17 @@ export class Scene2D {
 		//TODO: only turn on antialias on powerful machines
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
 		this.renderer.setSize(this.width, this.height);
+
+		//set up axises and grid
+		this.axis = new Axis2D();
+		
+		//TODO: remove
+		this.camera.changePosition(new Vector2(1, -3), 5000);
+		this.camera.changeZoom(1.5, 5000);
+		this.camera.changeRotation(45, 1000);
+		const gridHelper = new THREE.GridHelper(10, 10);
+		gridHelper.setRotationFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2)
+		// this.scene.add(gridHelper);
 
 		//set up raycaster
 		this.raycaster = new THREE.Raycaster();
@@ -55,6 +69,12 @@ export class Scene2D {
 
 		this.checkPointerIntersect();
 
+		this.axis.update(this.camera.getCameraProperties());
+
+		//TODO: remove
+		let debugCoords = this.camera.getCameraProperties().bottomEdge;
+		this.addObject(new Point2D(debugCoords.x, debugCoords.y, "name"));
+
 		this.renderer.render(this.scene, this.camera.getCamera());
 	}
 
@@ -68,6 +88,7 @@ export class Scene2D {
 			var object: Object2D =
 				intersects[0].object.userData.containerObject;
 			if (this.intersectedObject != object) {
+				this.intersectedObject?.hover(false);
 				object.hover(true);
 				this.intersectedObject = object;
 			}

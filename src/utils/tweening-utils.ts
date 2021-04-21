@@ -53,21 +53,25 @@ export function tween(
 	initial: any,
 	newValue: any,
 	onUpdate: () => void,
-	time: number = 300
+	time: number = 0
 ) {
 	//if newValue is a number then we'll create a NumberHolder out of it
 	if (typeof newValue === "number") {
 		newValue = new TweenableNumber(newValue); //wow this is actually disgusting i'm so sorry
 	}
 
+	//if time is 0, we don't need to tween
+	if (time == 0) {
+		for (const property in initial) {
+			initial[property] = newValue[property];
+		}
+		onUpdate();
+		return null;
+	}
+
 	//if the value to be tweened is a color then we're dealing with an entirely different breed
 	if (initial instanceof THREE.Color)
 		return colorTween(initial, newValue, onUpdate, time);
-
-	//if time is 0, we don't need to tween
-	if (time == 0) {
-		//TODO: implement
-	}
 
 	return new Tween(initial)
 		.to(newValue, time)

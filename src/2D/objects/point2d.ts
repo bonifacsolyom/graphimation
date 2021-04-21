@@ -27,9 +27,10 @@ export class Point2D extends Object2D {
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 
 		this.init();
+		this.updateMesh();
 	}
 
-	changeColor(color: THREE.Color, time: number = 300): void {
+	changeColor(color: THREE.Color, time: number = 0): void {
 		tween(this.color.baseColor, color, this.updateMesh.bind(this), time);
 	}
 

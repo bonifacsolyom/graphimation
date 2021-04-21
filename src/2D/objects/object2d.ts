@@ -21,7 +21,7 @@ export abstract class Object2D implements IObject2D {
 	private showName: boolean;
 	private higlightValues = {
 		growth: 1,
-		brightness: 20,
+		brightness: 10,
 	};
 	private hovered: boolean;
 
@@ -84,7 +84,7 @@ export abstract class Object2D implements IObject2D {
 	private highlight(
 		newHighlightBrightness: number,
 		newHighlightScale: number,
-		time: number = 20
+		time: number = 0
 	): void {
 		//interpolate brightness
 		tween(
@@ -113,7 +113,7 @@ export abstract class Object2D implements IObject2D {
 	}
 
 	//Changes the position of the object, interpolating between the old and the new value
-	changePosition(newPos: Vector2, time: number = 300) {
+	changePosition(newPos: Vector2, time: number = 0) {
 		tween(this.position, newPos, this.updateMesh.bind(this), time);
 	}
 
@@ -123,7 +123,7 @@ export abstract class Object2D implements IObject2D {
 	abstract changeColor(color: THREE.Color): void;
 
 	//Changes the scale of the object, interpolating between the old and the new value
-	changeScale(newScale: number, time: number = 300): void {
+	changeScale(newScale: number, time: number = 0): void {
 		tween(this.scale.baseScale, newScale, this.updateMesh.bind(this), time);
 	}
 

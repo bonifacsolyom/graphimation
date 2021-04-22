@@ -7,6 +7,7 @@ window.onload = function () {
 	let point = new Point2D(0, 0, "A");
 	let point2 = new Point2D(0, 0, "B", new Color("blue"));
 	scene2D.addObject(point);
+	//TODO: z coord in order of adding objects to scene
 	scene2D.addObject(point2);
 	document.body.appendChild(scene2D.getDomElement());
 	point.changeColor(new Color("red"), 2000);

@@ -1,7 +1,7 @@
 import * as math from "mathjs";
-import { OrthographicCamera, Quaternion, Vector2, Vector3 } from "three";
+import { ClampToEdgeWrapping, OrthographicCamera, Quaternion, Vector2, Vector3 } from "three";
 import { tween, TweenableNumber } from "../utils/tweening-utils";
-import { degreeToRadian } from "../utils/unit-utils";
+import { degreeToRadian, intersectRays } from "../utils/calc-utils";
 
 interface ICameraProperties {
 	upDir: Vector2;
@@ -85,9 +85,6 @@ export class Camera2D {
 		let downDir = new Vector2(-upDir.x, -upDir.y);
 		let rightDir = new Vector2(upDir.y, -upDir.x);
 		let leftDir = new Vector2(-upDir.y, upDir.x);
-		// let topEdge = this.position.add(
-		// 	upDir.multiplyScalar(this.camera.top / (2 * this.zoom.value))
-		// );
 		let topEdge = this.convertToWorldCoordinates(
 			new Vector2(0, this.camera.top)
 		);
@@ -100,22 +97,25 @@ export class Camera2D {
 		let rightEdge = this.convertToWorldCoordinates(
 			new Vector2(this.camera.right, 0)
 		);
-		// let topLeft = math.intersect(topEdge.);
+		let topLeft = intersectRays(topEdge, leftDir, leftEdge, upDir);
+		let topRight = intersectRays(topEdge, rightDir, rightEdge, upDir);
+		let bottomLeft = intersectRays(bottomEdge, leftDir, leftEdge, downDir);
+		let bottomRight = intersectRays(bottomEdge, rightDir, rightEdge, downDir);
 
 		return {
 			base: {} as ICameraProperties, //not sure if this is the proper way of doing it
 			upDir: upDir,
 			downDir: downDir,
-			rightDir: rightDir,
 			leftDir: leftDir,
+			rightDir: rightDir,
 			topEdge: topEdge,
 			bottomEdge: bottomEdge,
 			leftEdge: leftEdge,
 			rightEdge: rightEdge,
-			// topRight: Vector2,
-			// topLeft: Vector2,
-			// bottomRight: Vector2,
-			// bottomLeft: Vector2,
+			topLeft: topLeft,
+			topRight: topRight,
+			bottomLeft: bottomLeft,
+			bottomRight: bottomRight,
 		};
 	}
 

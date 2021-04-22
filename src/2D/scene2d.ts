@@ -86,7 +86,7 @@ export class Scene2D {
 		this.axis.update(this.camera.getCameraProperties());
 
 		//TODO: remove
-		let debugCoords = this.camera.getCameraProperties().bottomEdge;
+		let debugCoords = this.camera.getCameraProperties().bottomLeft;
 		this.addObject(new Point2D(debugCoords.x, debugCoords.y, "name"));
 
 		this.renderer.render(this.scene, this.camera.getCamera());

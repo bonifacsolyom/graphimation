@@ -1,9 +1,17 @@
 import * as THREE from "three";
-import { Vector2 } from "three";
-import { IObject2D } from "./ipassive-object2d";
 import { TweenableNumber, tween } from "../../utils/tweening-utils";
 import { PassiveObject2D } from "./passive-object2d";
 
+/* It may seem strange that Object2D implements PassiveObject2D,
+ * but the naming makes more sense from an API standpoint.
+ * More often than not the user will want to add an Object2D to the scene and not a passive one,
+ * therefore it makes sense to make its name shorter
+ */
+
+/**
+ * Extend this abstract class if you want to create an !interactable! 2D object that you can add to the scene.
+ * Make sure to call init() at the end of your constructor - I have not been able to find a workaround for this.
+ */
 export abstract class Object2D
 	extends PassiveObject2D
 	implements IInteractable {
@@ -17,7 +25,6 @@ export abstract class Object2D
 		brightness: 10,
 	};
 
-	//Type predicate. yes as far as I understand this is actually the way of doing it
 	isInteractable(): void {
 		return;
 	}
@@ -35,7 +42,6 @@ export abstract class Object2D
 		this.hovered = false;
 	}
 
-	//Should be called whenever the pointer is above the object
 	hover(hover: boolean): void {
 		if (hover && !this.hovered) {
 			this.hovered = true;
@@ -53,7 +59,13 @@ export abstract class Object2D
 		throw new Error("Method not implemented.");
 	}
 
-	//Will highlight the object by enlargening and brightening it
+	/**
+	 * Highlights the object by enlargening and brightening it.
+	 * Set the first two parameters to 0 to remove the highlight from the object.
+	 * @param newHighlightBrightness How much brighter the object should become
+	 * @param newHighlightScale How much larger the object should become
+	 * @param time The time it takes for the highlight animation. Set to 0 for an instantaneous result
+	 */
 	private highlight(
 		newHighlightBrightness: number,
 		newHighlightScale: number,
@@ -76,31 +88,10 @@ export abstract class Object2D
 		);
 	}
 
-	//updates the mesh with this object's data, for example colors and position
 	protected updateMesh() {
 		this.mesh.position.set(this.position.x, this.position.y, 0);
 
 		let newScale = this.baseScale.value + this.highlightScalePlus.value;
 		this.mesh.scale.set(newScale, newScale, 1);
-	}
-
-	//Changes the position of the object, interpolating between the old and the new value
-	changePosition(newPos: Vector2, time: number = 0) {
-		tween(this.position, newPos, this.updateMesh.bind(this), time);
-	}
-
-	//Changes the color of the object, interpolating between the old and the new value
-	//NOTE: THREE.Material doesn't have a color attribute, therefore we can't implement it here
-	//We will most likely end up using MeshBasicMaterial for all objects but I'm not sure yet
-	abstract changeColor(color: THREE.Color): void;
-
-	//Changes the scale of the object, interpolating between the old and the new value
-	changeScale(newScale: number, time: number = 0): void {
-		tween(this.baseScale, newScale, this.updateMesh.bind(this), time);
-	}
-
-	toggleName(): void {
-		this.showName = !this.showName;
-		//TODO: implement the rest
 	}
 }

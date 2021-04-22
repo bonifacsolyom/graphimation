@@ -22,7 +22,7 @@ export class Camera2D {
 	private camera: OrthographicCamera;
 	private aspect: number;
 	private frustumSize: number;
-	 position: Vector2;
+	position: Vector2;
 	private zoom: TweenableNumber;
 	private rotationAngle: TweenableNumber; //the rotation of the camera, in radians
 
@@ -134,11 +134,11 @@ export class Camera2D {
 
 	convertToWorldCoordinates(vec: Vector2): Vector2 {
 		let rightDir = new Vector2(this.getUpDir().y, -this.getUpDir().x);
-		
-		let rightOffset = rightDir.multiplyScalar(vec.x / (this.zoom.value));
-		let upOffset = this.getUpDir().multiplyScalar(vec.y / (this.zoom.value));
-		
+
+		let rightOffset = rightDir.multiplyScalar(vec.x / this.zoom.value);
+		let upOffset = this.getUpDir().multiplyScalar(vec.y / this.zoom.value);
+
 		let cameraPos = this.position.clone();
-		return cameraPos.add(upOffset.add(rightOffset))
+		return cameraPos.add(upOffset.add(rightOffset));
 	}
 }

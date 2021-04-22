@@ -22,14 +22,10 @@ export class Axis2D {
 			top: viewEdges.top,
 			bottom: viewEdges.bottom,
 			// topleft: MATH.intersect()
-		}
-    }
+		};
+	}
 
-    private renderAxis() {
-        
-    }
+	private renderAxis() {}
 
-    private renderGrid() {
-
-    }
+	private renderGrid() {}
 }

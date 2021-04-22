@@ -1,10 +1,11 @@
 import * as THREE from "three";
-import * as TWEEN from "@tweenjs/tween.js";
-import { Vector2 } from "three";
 import { Object2D } from "./object2d";
 import * as COLOR_UTIL from "../../utils/color-util";
 import { tween } from "../../utils/tweening-utils";
 
+/**
+ * A class that represents a 2D point on the scene.
+ */
 export class Point2D extends Object2D {
 	private renderRadius: number;
 

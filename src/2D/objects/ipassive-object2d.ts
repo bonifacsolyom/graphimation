@@ -6,10 +6,6 @@ import * as THREE from "three";
 export interface IObject2D {
 	getMesh(): THREE.Mesh;
 
-	hover(hover: boolean): void;
-
-	click(): void;
-
 	changePosition(newPos: THREE.Vector2, time?: number): void;
 
 	changeColor(color: THREE.Color, time?: number): void;

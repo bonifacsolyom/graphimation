@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
-import { IObject2D } from "./objects/iobject2d";
+import { IObject2D } from "./objects/ipassive-object2d";
 import { Camera2D } from "./camera2d";
 import { Vector2, Vector3 } from "three";
 import { Object2D } from "./objects/object2d";
@@ -33,14 +33,15 @@ export class Scene2D {
 
 		//set up axises and grid
 		this.axis = new Axis2D();
-		
+
 		//TODO: remove
 		this.camera.changePosition(new Vector2(1, -3), 5000);
 		this.camera.changeZoom(1.5, 5000);
 		this.camera.changeRotation(45, 1000);
 		const gridHelper = new THREE.GridHelper(10, 10);
-		gridHelper.setRotationFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2)
-		// this.scene.add(gridHelper);
+		gridHelper.setRotationFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2);
+		gridHelper.position.set(0, 0, -10)
+		this.scene.add(gridHelper);
 
 		//set up raycaster
 		this.raycaster = new THREE.Raycaster();
@@ -79,24 +80,38 @@ export class Scene2D {
 	}
 
 	private intersectedObject: Object2D | null = null;
-	//Checks if the pointer intersects with any object and if so, calls its highlight function
+	//Checks if the pointer intersects any object and if so, calls its hover function
 	private checkPointerIntersect() {
 		this.raycaster.setFromCamera(this.pointer, this.camera.getCamera());
 		const intersects = this.raycaster.intersectObjects(this.scene.children);
 
+		//we check if the cursor is actually intersecting anything
 		if (intersects.length > 0) {
-			var object: Object2D =
-				intersects[0].object.userData.containerObject;
-			if (this.intersectedObject != object) {
-				this.intersectedObject?.hover(false);
-				object.hover(true);
-				this.intersectedObject = object;
+			//the intersects array contains a threejs object. we want its container Object2D object
+			var object: Object2D | null =
+			intersects[0].object.userData.containerObject;
+			if (this.intersectedObject != object) this.intersectedObject?.hover(false);
+			//we only want to continue if the threejs object actually has a container, and the container implements the IInteractable interface
+			if (object != null && this.isIInteractable(object)) {
+					object.hover(true);
+					this.intersectedObject = object;
 			}
 		} else {
 			//our pointer isn't intersecting with anything
 			this.intersectedObject?.hover(false);
 			this.intersectedObject = null;
 		}
+	}
+
+	/**
+	 * Checks whether a given javascript object implements the IInteractable interface or not
+	 * @param obj The object to be checked
+	 * @returns true if the object implements IInteractable, otherwise false
+	 */
+	private isIInteractable(obj: object): obj is IInteractable {
+		//I can't believe that this is the actual way of doing this
+		//source for future reference: https://stackoverflow.com/a/64620472/6240623
+		return (obj as IInteractable).isInteractable !== undefined;
 	}
 
 	private onPointerMove(event: PointerEvent): void {

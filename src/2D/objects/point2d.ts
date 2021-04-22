@@ -31,7 +31,7 @@ export class Point2D extends Object2D {
 	}
 
 	changeColor(color: THREE.Color, time: number = 0): void {
-		tween(this.color.baseColor, color, this.updateMesh.bind(this), time);
+		tween(this.baseColor, color, this.updateMesh.bind(this), time);
 	}
 
 	getCenter(): THREE.Vector2 {
@@ -42,8 +42,8 @@ export class Point2D extends Object2D {
 		super.updateMesh();
 
 		let newColor = COLOR_UTIL.changeBrightness(
-			this.color.baseColor,
-			this.color.highlightBrightnessPlus.value
+			this.baseColor,
+			this.highlightBrightnessPlus.value
 		);
 		(<THREE.MeshBasicMaterial>this.material).color.set(newColor);
 	}

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
-import { IPassiveObject2D } from "./objects/ipassive-object2d";
+import { IObject2D } from "./objects/iobject2d";
 import { Camera2D } from "./camera2d";
 import { Vector2, Vector3 } from "three";
 import { Object2D } from "./objects/object2d";
@@ -60,7 +60,7 @@ export class Scene2D {
 	 * Adds a 2D object (such as a point or a line) to the scene
 	 * @param object The object to be added to the scene
 	 */
-	addObject(object: IPassiveObject2D): void {
+	addObject(object: IObject2D): void {
 		this.scene.add(object.getMesh());
 	}
 
@@ -110,7 +110,7 @@ export class Scene2D {
 			if (this.intersectedObject != object)
 				this.intersectedObject?.hover(false);
 			//We only want to continue if the threejs object actually has a container, and the container implements the IInteractable interface
-			if (object != null && this.isIInteractable(object)) {
+			if (object != null && object.hoverable) {
 				object.hover(true);
 				this.intersectedObject = object;
 			}
@@ -119,17 +119,6 @@ export class Scene2D {
 			this.intersectedObject?.hover(false);
 			this.intersectedObject = null;
 		}
-	}
-
-	/**
-	 * Checks whether a given javascript object implements the IInteractable interface or not
-	 * @param obj The object to be checked
-	 * @returns true if the object implements IInteractable, otherwise false
-	 */
-	private isIInteractable(obj: object): obj is IInteractable {
-		//I can't believe that this is the actual way of doing this
-		//source for future reference: https://stackoverflow.com/a/64620472/6240623
-		return (obj as IInteractable).isInteractable !== undefined;
 	}
 
 	/**

@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import * as math from "mathjs";
+import { ICameraProperties } from "./camera2d";
+import { Line2D } from "./objects/line2d";
 
 export class Axis2D {
 	private axisColor: THREE.Color;
@@ -13,17 +15,10 @@ export class Axis2D {
 		this.gridColor = new THREE.Color("gray");
 		this.gridShown = true;
 		this.increments = 1;
+		let line = new Line2D(1, 1, 5, 6, "line1");
 	}
 
-	update(viewEdges: any) {
-		let cameraPoints = {
-			left: viewEdges.left,
-			right: viewEdges.right,
-			top: viewEdges.top,
-			bottom: viewEdges.bottom,
-			// topleft: MATH.intersect()
-		};
-	}
+	update(cameraProperties: ICameraProperties) {}
 
 	private renderAxis() {}
 

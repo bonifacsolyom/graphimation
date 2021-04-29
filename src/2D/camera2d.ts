@@ -3,7 +3,7 @@ import { ClampToEdgeWrapping, OrthographicCamera, Quaternion, Vector2, Vector3 }
 import { tween, TweenableNumber } from "../utils/tweening-utils";
 import { degreeToRadian, intersectRays } from "../utils/calc-utils";
 
-interface ICameraProperties {
+export interface ICameraProperties {
 	upDir: Vector2;
 	downDir: Vector2;
 	rightDir: Vector2;

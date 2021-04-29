@@ -11,7 +11,7 @@ export abstract class Object2D implements IObject2D {
 	protected name: string;
 	private hovered: boolean;
 	protected highlightBrightnessPlus: TweenableNumber;
-	private highlightScalePlus: TweenableNumber;
+	protected highlightScalePlus: TweenableNumber;
 	//The position of the object - not necessarily the center, see getCenter()
 	protected position: THREE.Vector2;
 
@@ -106,6 +106,7 @@ export abstract class Object2D implements IObject2D {
 	 */
 	protected init() {
 		this.mesh.userData = { containerObject: this };
+		this.updateMesh();
 	}
 
 	getMesh(): THREE.Mesh {

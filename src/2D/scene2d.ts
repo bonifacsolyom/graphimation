@@ -6,6 +6,7 @@ import { Vector2, Vector3 } from "three";
 import { Object2D } from "./objects/object2d";
 import { Point2D } from "./objects/point2d";
 import { Axis2D } from "./axis2d";
+import { Line2D } from "./objects/line2d";
 
 /**
  * A scene that you can add objects to.
@@ -39,9 +40,9 @@ export class Scene2D {
 		this.axis = new Axis2D();
 
 		//TODO: remove
-		this.camera.changePosition(new Vector2(1, -3), 5000);
+		this.camera.changePosition(new Vector2(2, 1), 5000);
 		this.camera.changeZoom(1.5, 5000);
-		this.camera.changeRotation(45, 1000);
+		this.camera.changeRotation(360, 20000);
 		const gridHelper = new THREE.GridHelper(10, 10);
 		gridHelper.setRotationFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2);
 		gridHelper.position.set(0, 0, -10);
@@ -86,8 +87,8 @@ export class Scene2D {
 		this.axis.update(this.camera.getCameraProperties());
 
 		//TODO: remove
-		let debugCoords = this.camera.getCameraProperties().bottomLeft;
-		this.addObject(new Point2D(debugCoords.x, debugCoords.y, "name"));
+		// let debugCoords = this.camera.getCameraProperties().bottomLeft;
+		// this.addObject(new Point2D(debugCoords.x, debugCoords.y, "name"));
 
 		this.renderer.render(this.scene, this.camera.getCamera());
 	}

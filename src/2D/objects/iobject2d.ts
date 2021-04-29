@@ -2,9 +2,20 @@ import * as THREE from "three";
 
 /**
  * An interface that represents a drawable 2D object in the scene. Can be a point, line, square etc.
- * Passive means that the user won't be able to interact with it, it just hangs out in the scene
  */
-export interface IPassiveObject2D {
+export interface IObject2D {
+	/**
+	 * A method that's called when a user either hovers their cursor over or away from the object.
+	 * Will not have any effect if the object's hoverable property is set to false.
+	 * @param hover true if the mouse is over the object, false if not
+	 */
+	hover(hover: boolean): void;
+
+	/**
+	 * Called when the user clicks on the object.
+	 */
+	click(): void;
+
 	/**
 	 * Returns the three.js mesh of this object
 	 * @returns The three.js mesh of this object

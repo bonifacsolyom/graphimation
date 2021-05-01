@@ -4,9 +4,9 @@ import { IObject2D } from "./objects/iobject2d";
 import { Camera2D } from "./camera2d";
 import { Vector2, Vector3 } from "three";
 import { Object2D } from "./objects/object2d";
-import { Point2D } from "./objects/point2d";
 import { Axis2D } from "./axis2d";
 import { Line2D } from "./objects/line2d";
+import { removeFromArray } from "../utils/misc-utils";
 
 /**
  * A scene that you can add objects to.
@@ -22,6 +22,11 @@ export class Scene2D {
 
 	private width: number;
 	private height: number;
+	/**
+	 * The Z value of the
+	 * Essentially the amount of objects that have been placed in the scene.
+	 */
+	private objects: Object2D[];
 
 	constructor(width: number, height: number) {
 		this.scene = new THREE.Scene();
@@ -30,6 +35,7 @@ export class Scene2D {
 
 		this.camera = new Camera2D(width, height);
 		this.pointer = new Vector2(-1, 1);
+		this.objects = [];
 
 		//set up renderer
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -41,7 +47,7 @@ export class Scene2D {
 		//TODO: remove
 		const gridHelper = new THREE.GridHelper(10, 10);
 		gridHelper.setRotationFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2);
-		gridHelper.position.set(0, 0, -10);
+		gridHelper.position.set(0, 0, -1);
 		this.scene.add(gridHelper);
 
 		//set up raycaster
@@ -81,14 +87,40 @@ export class Scene2D {
 	}
 
 	/**
-	 * Adds a 2D object (such as a point or a line) to the scene
+	 * Adds a 2D object (such as a point or a line) to the scene.
 	 * @param object The object to be added to the scene
 	 */
-	addObject(object: IObject2D): void {
+	addObject(object: Object2D): void {
 		if (object instanceof Line2D)
 			object._setResolution(this.width, this.height);
 
+		//We change the Z position of the newly added object so that it's in front of every other object
+		//We also push back the camera's Z position by one so that its frustum encompasses the newly added object too
+		this.objects.push(object);
+		object.setZPos(this.objects.length);
+		this.camera.setZPos(this.objects.length + 1);
+
 		this.scene.add(object.getMesh());
+	}
+
+	/**
+	 * Removes a 2D object from the scene. If you just want to temporarily hide an object,
+	 * use its visible property instead. TODO: implement visible property
+	 * @param object The object to be removed from the scene
+	 */
+	removeObject(object: Object2D): void {
+		removeFromArray(this.objects, object);
+
+		/*
+		We refresh all the indexes of the objects. Not the most efficient way of doing this,
+		But it shouldn't matter because the amount of objects we'll have at any given point
+		will be relatively low
+		*/
+		//TODO: test that this actually works properly
+		for (let i = 0; i < this.objects.length; i++) {
+			this.objects[i].setZPos(i);
+		}
+		this.camera.setZPos(this.objects.length + 1);
 	}
 
 	/**

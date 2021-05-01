@@ -29,6 +29,12 @@ export class Camera2D {
 	private aspect: number;
 	private frustumSize: number;
 	position: Vector2;
+	/**
+	 * Represents the third coordinate of the camera's 3D position. Since the Z axis is only used
+	 * as a means of deciding whether an object is behind or in front of other objects, it makes
+	 * more sense to make the camera's position a vec2 and represent its Z coordinate this way.
+	 */
+	zPos: number;
 	private zoom: TweenableNumber;
 	private rotationAngle: TweenableNumber; //the rotation of the camera, in radians
 
@@ -45,6 +51,7 @@ export class Camera2D {
 		);
 
 		this.position = new Vector2(0, 0);
+		this.zPos = 0;
 		this.zoom = new TweenableNumber(1);
 		this.rotationAngle = new TweenableNumber(0);
 		this.update();
@@ -55,7 +62,7 @@ export class Camera2D {
 	}
 
 	private update(): void {
-		this.camera.position.set(this.position.x, this.position.y, 1);
+		this.camera.position.set(this.position.x, this.position.y, this.zPos);
 		this.camera.setRotationFromAxisAngle(
 			new Vector3(0, 0, 1),
 			this.rotationAngle.value
@@ -168,5 +175,12 @@ export class Camera2D {
 
 		let cameraPos = this.position.clone();
 		return cameraPos.add(upOffset.add(rightOffset));
+	}
+
+	setZPos(value: number): void {
+		//If the z position didn't actually change, there's no need to update the camera
+		if (this.zPos == value) return;
+		this.zPos = value;
+		this.update();
 	}
 }

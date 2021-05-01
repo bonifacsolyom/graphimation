@@ -1,5 +1,6 @@
 import * as THREE from "three";
 
+//TODO: delete this interface, Object2D is sufficient now
 /**
  * An interface that represents a drawable 2D object in the scene. Can be a point, line, square etc.
  */

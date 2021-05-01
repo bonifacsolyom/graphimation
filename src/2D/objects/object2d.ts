@@ -13,7 +13,13 @@ export abstract class Object2D implements IObject2D {
 	protected highlightBrightnessPlus: TweenableNumber;
 	protected highlightScalePlus: TweenableNumber;
 	//The position of the object - not necessarily the center, see getCenter()
-	protected position: THREE.Vector2;
+	protected position: Vector2;
+	/**
+	 * Represents the third coordinate of the camera's 3D position. Since the Z axis is only used
+	 * as a means of deciding whether an object is behind or in front of other objects, it makes
+	 * more sense to make the camera's position a vec2 and represent its Z coordinate this way.
+	 */
+	protected zPos: number;
 
 	//The object's final color and scale will be the sum of the base values and anything else that the subclass may implement
 	protected baseColor: THREE.Color;
@@ -40,6 +46,7 @@ export abstract class Object2D implements IObject2D {
 		color: THREE.Color = new THREE.Color("white")
 	) {
 		this.position = new Vector2(x, y);
+		this.zPos = 0;
 		this.baseColor = color;
 		this.showName = true;
 		this.baseScale = new TweenableNumber(1);
@@ -118,7 +125,7 @@ export abstract class Object2D implements IObject2D {
 	 * This function should usually be the callback function while you're tweening a property of this object.
 	 */
 	protected updateMesh() {
-		this.mesh.position.set(this.position.x, this.position.y, 0);
+		this.mesh.position.set(this.position.x, this.position.y, this.zPos);
 
 		let newScale = this.baseScale.value + this.highlightScalePlus.value;
 		this.mesh.scale.set(newScale, newScale, 1);
@@ -139,5 +146,12 @@ export abstract class Object2D implements IObject2D {
 	toggleName(): void {
 		this.showName = !this.showName;
 		//TODO: implement the rest
+	}
+
+	setZPos(value: number) {
+		//If the z position didn't actually change, there's no need to update the mesh
+		if (this.zPos == value) return;
+		this.zPos = value;
+		this.updateMesh();
 	}
 }

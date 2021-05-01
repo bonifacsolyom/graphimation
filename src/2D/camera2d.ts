@@ -1,5 +1,11 @@
 import * as math from "mathjs";
-import { ClampToEdgeWrapping, OrthographicCamera, Quaternion, Vector2, Vector3 } from "three";
+import {
+	ClampToEdgeWrapping,
+	OrthographicCamera,
+	Quaternion,
+	Vector2,
+	Vector3,
+} from "three";
 import { tween, TweenableNumber } from "../utils/tweening-utils";
 import { degreeToRadian, intersectRays } from "../utils/calc-utils";
 
@@ -58,18 +64,28 @@ export class Camera2D {
 		this.camera.updateProjectionMatrix(); //this is needed for the new zoom value to take effect
 	}
 
+	/**
+	 * Changes the position of the camera, smoothly interpolating between the old and the new value.
+	 * @param newPos The new position of the camera
+	 * @param time The time it takes for the move animation. Set to 0 for an instantaneous result
+	 */
 	changePosition(newPos: Vector2, time: number = 0): void {
 		tween(this.position, newPos, this.update.bind(this), time);
 	}
 
+	/**
+	 * Changes the zoom level of the camera, smoothly interpolating between the old and the new value.
+	 * @param newZoom The new zoom level of the camera
+	 * @param time The time it takes for the zooming animation. Set to 0 for an instantaneous result
+	 */
 	changeZoom(newZoom: number, time: number = 0) {
 		tween(this.zoom, newZoom, this.update.bind(this), time);
 	}
 
 	/**
-	 *
+	 * Changes the rotation of the camera, smoothly interpolating between the old and the new value.
 	 * @param angle Angle in degrees
-	 * @param time How long the change should take
+	 * @param time The time it takes for the rotation animation. Set to 0 for an instantaneous result
 	 */
 	changeRotation(angle: number, time: number = 0): void {
 		tween(
@@ -80,6 +96,10 @@ export class Camera2D {
 		);
 	}
 
+	/**
+	 *
+	 * @returns The current properties of the camera
+	 */
 	getCameraProperties() {
 		let upDir = this.getUpDir();
 		let downDir = new Vector2(-upDir.x, -upDir.y);
@@ -100,7 +120,12 @@ export class Camera2D {
 		let topLeft = intersectRays(topEdge, leftDir, leftEdge, upDir);
 		let topRight = intersectRays(topEdge, rightDir, rightEdge, upDir);
 		let bottomLeft = intersectRays(bottomEdge, leftDir, leftEdge, downDir);
-		let bottomRight = intersectRays(bottomEdge, rightDir, rightEdge, downDir);
+		let bottomRight = intersectRays(
+			bottomEdge,
+			rightDir,
+			rightEdge,
+			downDir
+		);
 
 		return {
 			base: {} as ICameraProperties, //not sure if this is the proper way of doing it
@@ -123,16 +148,19 @@ export class Camera2D {
 	 *
 	 * @returns A normalized vector pointing up from the camera
 	 */
-	getUpDir(): Vector2 {
+	private getUpDir(): Vector2 {
 		return new Vector2(0, 1).rotateAround(
 			new Vector2(0, 0),
 			this.rotationAngle.value
 		);
 	}
 
-	// convertToScreenCoordinates(vec: Vector2): Vector2 {}
+	private convertToScreenCoordinates(vec: Vector2): Vector2 {
+		//TODO: implement this method
+		throw new Error("Method not implemented.");
+	}
 
-	convertToWorldCoordinates(vec: Vector2): Vector2 {
+	private convertToWorldCoordinates(vec: Vector2): Vector2 {
 		let rightDir = new Vector2(this.getUpDir().y, -this.getUpDir().x);
 
 		let rightOffset = rightDir.multiplyScalar(vec.x / this.zoom.value);

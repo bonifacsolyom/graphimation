@@ -6,6 +6,9 @@ import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { tween } from "../../utils/tweening-utils";
 
+/**
+ * A class that represents a 2D line on the scene.
+ */
 export class Line2D extends Object2D {
 	protected endPosition: Vector2;
 
@@ -24,13 +27,7 @@ export class Line2D extends Object2D {
 		this.material = new LineMaterial({
 			color: color.getHex(),
 			linewidth: this.baseScale.value,
-			// resolution: new Vector2(window.innerWidth, window.innerHeight),
 		});
-
-		(this.material as LineMaterial).resolution.set(
-			window.innerWidth,
-			window.innerHeight
-		);
 
 		this.geometry = new LineGeometry();
 		(this.geometry as LineGeometry).setPositions([
@@ -55,6 +52,14 @@ export class Line2D extends Object2D {
 
 		let newWidth = this.baseScale.value + this.highlightScalePlus.value;
 		(this.mesh.material as LineMaterial).linewidth = newWidth;
+	}
+
+	/**
+	 * Used internally to set the resolution of the line so that it doesn't look distorted on non 1:1 aspect ratios.
+	 * There's probably no reason you'd want to call this function.
+	 */
+	_setResolution(width: number, height: number): void {
+		(this.material as LineMaterial).resolution.set(width, height);
 	}
 
 	getCenter(): Vector2 {

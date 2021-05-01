@@ -9,6 +9,7 @@ window.onload = function () {
 	let point2 = new Point2D(0, 0, "B", new Color("blue"));
 	let line = new Line2D(0, 0, 2, 2, "line");
 	let centerPoint = new Point2D(0, 0, "center", new Color("red"));
+
 	scene2D.addObject(point);
 	//TODO: z coord in order of adding objects to scene
 	scene2D.addObject(point2);
@@ -21,4 +22,8 @@ window.onload = function () {
 	point2.changeScale(6, 4000);
 	scene2D.addObject(centerPoint);
 	scene2D.addObject(line);
+
+	scene2D.changeCameraPosition(new Vector2(2, 1), 5000);
+	scene2D.changeCameraZoom(1.5, 5000);
+	scene2D.changeCameraRotation(360, 20000);
 };

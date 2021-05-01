@@ -4,7 +4,7 @@ import { TweenableNumber, tween } from "../../utils/tweening-utils";
 import { IObject2D } from "./iobject2d";
 
 /**
- * Extend this abstract class if you want to create a !non-interactable! 2D object that can be added to the scene.
+ * Extend this abstract class if you want to create a 2D object that can be added to the scene.
  * Make sure to call init() at the end of your constructor - I have not been able to find a workaround for this.
  */
 export abstract class Object2D implements IObject2D {
@@ -21,7 +21,7 @@ export abstract class Object2D implements IObject2D {
 
 	protected higlightValues = {
 		growth: 0.5,
-		brightness: 10,
+		brightness: 5,
 	};
 
 	//Whether the object should react to the user hovering over it
@@ -128,7 +128,7 @@ export abstract class Object2D implements IObject2D {
 		tween(this.position, newPos, this.updateMesh.bind(this), time);
 	}
 
-	//NOTE: THREE.Material doesn't have a color attribute, therefore we can't implement it here
+	//NOTE: THREE.Material doesn't have a color attribute, therefore we can't implement this function here
 	//We will most likely end up using MeshBasicMaterial for all objects but I'm not sure yet
 	abstract changeColor(color: THREE.Color, time: number): void;
 

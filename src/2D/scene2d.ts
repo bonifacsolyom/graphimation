@@ -39,9 +39,6 @@ export class Scene2D {
 		this.axis = new Axis2D();
 
 		//TODO: remove
-		this.camera.changePosition(new Vector2(2, 1), 5000);
-		this.camera.changeZoom(1.5, 5000);
-		this.camera.changeRotation(360, 20000);
 		const gridHelper = new THREE.GridHelper(10, 10);
 		gridHelper.setRotationFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2);
 		gridHelper.position.set(0, 0, -10);
@@ -57,10 +54,40 @@ export class Scene2D {
 	}
 
 	/**
+	 * Changes the position of the camera, smoothly interpolating between the old and the new value.
+	 * @param newPos The new position of the camera
+	 * @param time The time it takes for the move animation. Set to 0 for an instantaneous result
+	 */
+	changeCameraPosition(newPos: Vector2, time: number = 0): void {
+		this.camera.changePosition(newPos, time);
+	}
+
+	/**
+	 * Changes the zoom level of the camera, smoothly interpolating between the old and the new value.
+	 * @param newZoom The new zoom level of the camera
+	 * @param time The time it takes for the zooming animation. Set to 0 for an instantaneous result
+	 */
+	changeCameraZoom(newZoom: number, time: number = 0) {
+		this.camera.changeZoom(newZoom, time);
+	}
+
+	/**
+	 * Changes the rotation of the camera, smoothly interpolating between the old and the new value.
+	 * @param angle Angle in degrees
+	 * @param time The time it takes for the rotation animation. Set to 0 for an instantaneous result
+	 */
+	changeCameraRotation(angle: number, time: number = 0): void {
+		this.camera.changeRotation(angle, time);
+	}
+
+	/**
 	 * Adds a 2D object (such as a point or a line) to the scene
 	 * @param object The object to be added to the scene
 	 */
 	addObject(object: IObject2D): void {
+		if (object instanceof Line2D)
+			object._setResolution(this.width, this.height);
+
 		this.scene.add(object.getMesh());
 	}
 

@@ -1,8 +1,10 @@
 import * as THREE from "three";
 import { Vector2, Vector3 } from "three";
 import { Object2D } from "./object2d";
-import { Line2, LineGeometry, LineMaterial } from "three-fatline";
-import { LineRaycast } from "three-line-raycast";
+import { Line2 } from "three/examples/jsm/lines/Line2.js";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
+import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
+import { tween } from "../../utils/tweening-utils";
 
 export class Line2D extends Object2D {
 	protected endPosition: Vector2;
@@ -17,12 +19,18 @@ export class Line2D extends Object2D {
 	) {
 		super(x1, y1, name, color);
 		this.endPosition = new Vector2(x2, y2);
-		this.baseScale.value = 0.005;
-		this.higlightValues.growth = 0.005;
+		this.baseScale.value = 5;
+		this.higlightValues.growth = 3;
 		this.material = new LineMaterial({
 			color: color.getHex(),
 			linewidth: this.baseScale.value,
+			// resolution: new Vector2(window.innerWidth, window.innerHeight),
 		});
+
+		(this.material as LineMaterial).resolution.set(
+			window.innerWidth,
+			window.innerHeight
+		);
 
 		this.geometry = new LineGeometry();
 		(this.geometry as LineGeometry).setPositions([
@@ -38,7 +46,6 @@ export class Line2D extends Object2D {
 			this.geometry as LineGeometry,
 			this.material as LineMaterial
 		);
-		this.mesh.raycast = LineRaycast;
 
 		this.init();
 	}
@@ -51,10 +58,13 @@ export class Line2D extends Object2D {
 	}
 
 	getCenter(): Vector2 {
-		throw new Error("Method not implemented.");
+		return this.position
+			.clone()
+			.add(this.endPosition.clone())
+			.divideScalar(2);
 	}
 
-	changeColor(color: THREE.Color, time: number): void {
-		throw new Error("Method not implemented.");
+	changeColor(color: THREE.Color, time: number = 0): void {
+		tween(this.baseColor, color, this.updateMesh.bind(this), time);
 	}
 }

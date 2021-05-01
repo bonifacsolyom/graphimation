@@ -8,7 +8,7 @@ import { IObject2D } from "./iobject2d";
  * Make sure to call init() at the end of your constructor - I have not been able to find a workaround for this.
  */
 export abstract class Object2D implements IObject2D {
-	protected name: string;
+	name: string;
 	private hovered: boolean;
 	protected highlightBrightnessPlus: TweenableNumber;
 	protected highlightScalePlus: TweenableNumber;
@@ -20,7 +20,7 @@ export abstract class Object2D implements IObject2D {
 	protected baseScale: TweenableNumber;
 
 	protected higlightValues = {
-		growth: 1,
+		growth: 0.5,
 		brightness: 10,
 	};
 

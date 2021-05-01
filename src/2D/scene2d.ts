@@ -32,7 +32,6 @@ export class Scene2D {
 		this.pointer = new Vector2(-1, 1);
 
 		//set up renderer
-		//TODO: only turn on antialias on powerful machines
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
 		this.renderer.setSize(this.width, this.height);
 
@@ -85,10 +84,6 @@ export class Scene2D {
 		this.checkPointerIntersect();
 
 		this.axis.update(this.camera.getCameraProperties());
-
-		//TODO: remove
-		// let debugCoords = this.camera.getCameraProperties().bottomLeft;
-		// this.addObject(new Point2D(debugCoords.x, debugCoords.y, "name"));
 
 		this.renderer.render(this.scene, this.camera.getCamera());
 	}

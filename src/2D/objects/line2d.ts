@@ -48,7 +48,7 @@ export class Line2D extends Object2D {
 	}
 
 	protected updateMesh() {
-		this.mesh.position.set(this.position.x, this.position.y, 0);
+		this.mesh.position.set(this.position.x, this.position.y, this.zPos);
 
 		let newWidth = this.baseScale.value + this.highlightScalePlus.value;
 		(this.mesh.material as LineMaterial).linewidth = newWidth;

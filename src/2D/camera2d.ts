@@ -177,10 +177,14 @@ export class Camera2D {
 		return cameraPos.add(upOffset.add(rightOffset));
 	}
 
-	setZPos(value: number): void {
+	/**
+	 * Updates the object's z position
+	 * @param newZ The new z position
+	 */
+	setZPos(newZ: number): void {
 		//If the z position didn't actually change, there's no need to update the camera
-		if (this.zPos == value) return;
-		this.zPos = value;
+		if (this.zPos == newZ) return;
+		this.zPos = newZ;
 		this.update();
 	}
 }

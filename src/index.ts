@@ -13,6 +13,9 @@ window.onload = function () {
 	scene2D.addObject(point);
 	//TODO: z coord in order of adding objects to scene
 	scene2D.addObject(point2);
+	scene2D.addObject(line);
+	scene2D.addObject(centerPoint);
+
 	document.body.appendChild(scene2D.getDomElement());
 	point.changeColor(new Color("red"), 2000);
 	point.changePosition(new Vector2(5, 1), 2000);
@@ -20,8 +23,6 @@ window.onload = function () {
 	point2.changeColor(new Color("green"), 4000);
 	point2.changePosition(new Vector2(-1, -1), 4000);
 	point2.changeScale(6, 4000);
-	scene2D.addObject(centerPoint);
-	scene2D.addObject(line);
 
 	scene2D.changeCameraPosition(new Vector2(2, 1), 5000);
 	scene2D.changeCameraZoom(1.5, 5000);

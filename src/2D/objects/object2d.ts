@@ -1,13 +1,12 @@
 import * as THREE from "three";
 import { Vector2 } from "three";
 import { TweenableNumber, tween } from "../../utils/tweening-utils";
-import { IObject2D } from "./iobject2d";
 
 /**
  * Extend this abstract class if you want to create a 2D object that can be added to the scene.
  * Make sure to call init() at the end of your constructor - I have not been able to find a workaround for this.
  */
-export abstract class Object2D implements IObject2D {
+export abstract class Object2D {
 	name: string;
 	private hovered: boolean;
 	protected highlightBrightnessPlus: TweenableNumber;
@@ -57,6 +56,11 @@ export abstract class Object2D implements IObject2D {
 		this.hovered = false;
 	}
 
+	/**
+	 * A method that's called when a user either hovers their cursor over or away from the object.
+	 * Will not have any effect if the object's hoverable property is set to false.
+	 * @param hover true if the mouse is over the object, false if not
+	 */
 	hover(hover: boolean): void {
 		if (!this.hoverable) return;
 		if (hover && !this.hovered) {
@@ -71,6 +75,9 @@ export abstract class Object2D implements IObject2D {
 		}
 	}
 
+	/**
+	 * Called when the user clicks on the object.
+	 */
 	click(): void {
 		throw new Error("Method not implemented.");
 	}
@@ -104,6 +111,10 @@ export abstract class Object2D implements IObject2D {
 		);
 	}
 
+	/**
+	 *
+	 * @returns The mathematical center of the object.
+	 */
 	abstract getCenter(): THREE.Vector2;
 
 	/**
@@ -116,6 +127,10 @@ export abstract class Object2D implements IObject2D {
 		this.updateMesh();
 	}
 
+	/**
+	 * Returns the three.js mesh of this object
+	 * @returns The three.js mesh of this object
+	 */
 	getMesh(): THREE.Mesh {
 		return this.mesh;
 	}
@@ -131,27 +146,49 @@ export abstract class Object2D implements IObject2D {
 		this.mesh.scale.set(newScale, newScale, 1);
 	}
 
+	/**
+	 * Changes the position of the object, smoothly interpolating between the old and the new value.
+	 * @param newPos The new position of the object
+	 * @param time The time it takes for the move animation. Set to 0 for an instantaneous result
+	 */
 	changePosition(newPos: Vector2, time: number = 0) {
 		tween(this.position, newPos, this.updateMesh.bind(this), time);
 	}
 
 	//NOTE: THREE.Material doesn't have a color attribute, therefore we can't implement this function here
 	//We will most likely end up using MeshBasicMaterial for all objects but I'm not sure yet
+	/**
+	 * Changes the color of the object, smoothly interpolating between the old and the new value.
+	 * @param color The new color of the object
+	 * @param time The time it takes for the color change animation. Set to 0 for an instantaneous result
+	 */
 	abstract changeColor(color: THREE.Color, time: number): void;
 
+	/**
+	 * Changes the scale of the object, smoothly interpolating between the old and the new value.
+	 * @param newScale The new scale of the object
+	 * @param time The time it takes for the scaling animation. Set to 0 for an instantaneous result
+	 */
 	changeScale(newScale: number, time: number = 0): void {
 		tween(this.baseScale, newScale, this.updateMesh.bind(this), time);
 	}
 
+	/**
+	 * Toggles whether the object's name is visible above it or not.
+	 */
 	toggleName(): void {
 		this.showName = !this.showName;
 		//TODO: implement the rest
 	}
 
-	setZPos(value: number) {
+	/**
+	 * Updates the object's z position
+	 * @param newZ The new z position
+	 */
+	setZPos(newZ: number): void {
 		//If the z position didn't actually change, there's no need to update the mesh
-		if (this.zPos == value) return;
-		this.zPos = value;
+		if (this.zPos == newZ) return;
+		this.zPos = newZ;
 		this.updateMesh();
 	}
 }

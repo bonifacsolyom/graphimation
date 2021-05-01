@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
-import { IObject2D } from "./objects/iobject2d";
 import { Camera2D } from "./camera2d";
 import { Vector2, Vector3 } from "three";
 import { Object2D } from "./objects/object2d";

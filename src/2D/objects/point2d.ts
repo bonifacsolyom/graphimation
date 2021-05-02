@@ -23,9 +23,9 @@ export class Point2D extends Object2D {
 
 		this.renderRadius = renderRadius;
 
-		this.geometry = new THREE.CircleGeometry(renderRadius, this.SEGMENTS);
-		this.material = new THREE.MeshBasicMaterial({ color: color });
-		this.mesh = new THREE.Mesh(this.geometry, this.material);
+		let geometry = new THREE.CircleGeometry(renderRadius, this.SEGMENTS);
+		let material = new THREE.MeshBasicMaterial({ color: color });
+		this.tObject = new THREE.Mesh(geometry, material);
 
 		this.init();
 		this.updateMesh();
@@ -46,6 +46,6 @@ export class Point2D extends Object2D {
 			this.baseColor,
 			this.highlightBrightnessPlus.value
 		);
-		(<THREE.MeshBasicMaterial>this.material).color.set(newColor);
+		(this.getMaterial() as THREE.MeshBasicMaterial).color.set(newColor);
 	}
 }

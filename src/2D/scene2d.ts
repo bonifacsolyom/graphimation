@@ -99,7 +99,7 @@ export class Scene2D {
 		object.setZPos(this.objects.length);
 		this.camera.setZPos(this.objects.length + 1);
 
-		this.scene.add(object.getMesh());
+		this.scene.add(object.getTHREEObject());
 	}
 
 	/**

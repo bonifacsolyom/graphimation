@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Vector2, Vector3 } from "three";
+import { Vector2 } from "three";
 import { Object2D } from "./object2d";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
@@ -24,34 +24,33 @@ export class Line2D extends Object2D {
 		this.endPosition = new Vector2(x2, y2);
 		this.baseScale.value = 5;
 		this.higlightValues.growth = 3;
-		this.material = new LineMaterial({
+		let material = new LineMaterial({
 			color: color.getHex(),
 			linewidth: this.baseScale.value,
 		});
 
-		this.geometry = new LineGeometry();
-		(this.geometry as LineGeometry).setPositions([
-			this.position.x,
-			this.position.y,
+		let relativeEndPoint = this.getRelativeEndPoint();
+
+		let geometry = new LineGeometry();
+		geometry.setPositions([
 			0,
-			this.endPosition.x,
-			this.endPosition.y,
 			0,
+			this.zPos,
+			relativeEndPoint.x,
+			relativeEndPoint.y,
+			this.zPos,
 		]);
 
-		this.mesh = new Line2(
-			this.geometry as LineGeometry,
-			this.material as LineMaterial
-		);
+		this.tObject = new Line2(geometry, material);
 
 		this.init();
 	}
 
 	protected updateMesh() {
-		this.mesh.position.set(this.position.x, this.position.y, this.zPos);
+		this.tObject.position.set(this.position.x, this.position.y, this.zPos);
 
 		let newWidth = this.baseScale.value + this.highlightScalePlus.value;
-		(this.mesh.material as LineMaterial).linewidth = newWidth;
+		(this.getMaterial() as LineMaterial).linewidth = newWidth;
 	}
 
 	/**
@@ -59,7 +58,7 @@ export class Line2D extends Object2D {
 	 * There's probably no reason you'd want to call this function.
 	 */
 	_setResolution(width: number, height: number): void {
-		(this.material as LineMaterial).resolution.set(width, height);
+		(this.getMaterial() as LineMaterial).resolution.set(width, height);
 	}
 
 	getCenter(): Vector2 {
@@ -71,5 +70,12 @@ export class Line2D extends Object2D {
 
 	changeColor(color: THREE.Color, time: number = 0): void {
 		tween(this.baseColor, color, this.updateMesh.bind(this), time);
+	}
+
+	protected getRelativeEndPoint(): Vector2 {
+		return new Vector2(
+			this.endPosition.x - this.position.x,
+			this.endPosition.y - this.position.y
+		);
 	}
 }

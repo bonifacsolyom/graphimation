@@ -33,10 +33,11 @@ export abstract class Object2D {
 	hoverable = true;
 	protected showName: boolean;
 
-	//WARN: definite assignment used - remember to define these variables in child class
-	protected geometry!: THREE.BufferGeometry;
-	protected material!: THREE.Material;
-	protected mesh!: THREE.Mesh;
+	/**
+	 * The three.js object that the threejs rendering engine uses
+	 * WARN: definite assignment used - remember to define the object in child class
+	 */
+	protected tObject!: THREE.Object3D;
 
 	constructor(
 		x: number,
@@ -118,32 +119,45 @@ export abstract class Object2D {
 	abstract getCenter(): THREE.Vector2;
 
 	/**
-	 * Sets it so that this object's mesh has a reference back to this object, it's "container".
+	 * Sets it so that this object's mesh has a reference back to this object, its "container".
 	 * This attribute is used at raytracing.
 	 * Make sure to call this at the end of every child's constructor.
 	 */
 	protected init() {
-		this.mesh.userData = { containerObject: this };
-		this.updateMesh();
+		this.tObject.userData = { containerObject: this };
+		this.initMesh();
 	}
 
+	private initMesh() {
+		this.tObject.position.set(
+			this.position.x,
+			this.position.y,
+			this.zPos
+		);
+		//TODO: init the rest of the properties
+	}
+	
 	/**
-	 * Returns the three.js mesh of this object
-	 * @returns The three.js mesh of this object
+	 *
+	 * @returns The three.js object3D of this object
 	 */
-	getMesh(): THREE.Mesh {
-		return this.mesh;
+	getTHREEObject(): THREE.Object3D {
+		return this.tObject;
 	}
-
+	
 	/**
 	 * Updates the mesh with this object's data, for example colors and position.
 	 * This function should usually be the callback function while you're tweening a property of this object.
 	 */
 	protected updateMesh() {
-		this.mesh.position.set(this.position.x, this.position.y, this.zPos);
+		this.tObject.position.set(
+			this.position.x,
+			this.position.y,
+			this.zPos
+		);
 
 		let newScale = this.baseScale.value + this.highlightScalePlus.value;
-		this.mesh.scale.set(newScale, newScale, 1);
+		this.tObject.scale.set(newScale, newScale, 1);
 	}
 
 	/**
@@ -190,5 +204,21 @@ export abstract class Object2D {
 		if (this.zPos == newZ) return;
 		this.zPos = newZ;
 		this.updateMesh();
+	}
+
+	/**
+	 *
+	 * @returns The material of the threejs Object3D
+	 */
+	protected getMaterial(): THREE.Material {
+		return (this.tObject as THREE.Mesh).material as THREE.Material;
+	}
+
+	/**
+	 *
+	 * @returns The geometry of  the threejs Object3D
+	 */
+	protected getGeometry(): THREE.BufferGeometry {
+		return (this.tObject as THREE.Mesh).geometry;
 	}
 }

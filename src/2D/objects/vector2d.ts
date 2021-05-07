@@ -1,11 +1,14 @@
 import * as THREE from "three";
 import { Vector3 } from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2";
+import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 import { lineAngle, radianToDegree } from "../../utils/calc-utils";
+import { AbstractLine2D } from "./abstract-line2d";
 import { Line2D } from "./line2d";
+import { Object2D } from "./object2d";
 
-export class Vector2D extends Line2D {
+export class Vector2D extends AbstractLine2D {
 	lineMesh: Line2;
 	headMesh: THREE.Mesh;
 
@@ -18,18 +21,46 @@ export class Vector2D extends Line2D {
 		color: THREE.Color = new THREE.Color("white")
 	) {
 		super(x1, y1, x2, y2, name, color);
-		this.lineMesh = this.tObject as Line2;
+
+		let lineMaterial = new LineMaterial({
+			color: color.getHex(),
+			linewidth: this.baseScale.value,
+		});
+		let lineGeometry = this.createLineGeometry();
+		this.lineMesh = new Line2(lineGeometry, lineMaterial);
+
 		this.headMesh = this.createHead();
 		this.tObject = new THREE.Group();
 		(this.tObject as THREE.Group).add(this.lineMesh);
-		// (this.tObject as THREE.Group).add(this.headMesh);
+		(this.tObject as THREE.Group).add(this.headMesh);
 
 		this.init();
 	}
 
+	protected init() {
+		super.init();
+		this.lineMesh.userData = { containerObject: this };
+		this.headMesh.userData = { containerObject: this };
+	}
+
+	protected createLineGeometry(): LineGeometry {
+		let geometry = new LineGeometry();
+		let relativeEndPoint = this.getRelativeEndPoint();
+		//We need to shorten the line a little, otherwise it shows up at the end of the arrow's head
+		geometry.setPositions([
+			0,
+			0,
+			this.zPos,
+			relativeEndPoint.x - relativeEndPoint.x / 25,
+			relativeEndPoint.y - relativeEndPoint.y / 25,
+			this.zPos,
+		]);
+		return geometry;
+	}
+
 	private createHead(): THREE.Mesh {
 		let geometry = new THREE.BufferGeometry();
-		let vertices = new Float32Array([0, -1, 0, 2, 0, 0, 0, 1, 0]);
+		let vertices = new Float32Array([-2, -1, -2, 0, 0, 0, -2, 1, -2]);
 		vertices = vertices.map((val) => val / 25); //we shrink the triangle
 		geometry.setAttribute(
 			"position",
@@ -41,7 +72,8 @@ export class Vector2D extends Line2D {
 	}
 
 	private updateHead(): void {
-		this.headMesh.position.set(this.endPosition.x, this.endPosition.y, 0);
+		let relativeEndPoint = this.getRelativeEndPoint();
+		this.headMesh.position.set(relativeEndPoint.x, relativeEndPoint.y, 0);
 		let angle = lineAngle(this.position, this.endPosition);
 		this.headMesh.setRotationFromAxisAngle(new Vector3(0, 0, 1), angle);
 	}

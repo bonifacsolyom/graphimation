@@ -68,11 +68,11 @@ export abstract class Object2D {
 			this.hovered = true;
 			this.highlight(
 				this.higlightValues.brightness,
-				this.higlightValues.growth
+				this.higlightValues.growth, 25
 			);
 		} else if (!hover && this.hovered) {
 			this.hovered = false;
-			this.highlight(0, 0);
+			this.highlight(0, 0, 25);
 		}
 	}
 
@@ -95,6 +95,7 @@ export abstract class Object2D {
 		newHighlightScale: number,
 		time: number = 0
 	): void {
+		// console.log(this.name);
 		//interpolate brightness
 		tween(
 			this.highlightBrightnessPlus,
@@ -129,14 +130,10 @@ export abstract class Object2D {
 	}
 
 	private initMesh() {
-		this.tObject.position.set(
-			this.position.x,
-			this.position.y,
-			this.zPos
-		);
+		this.tObject.position.set(this.position.x, this.position.y, this.zPos);
 		//TODO: init the rest of the properties
 	}
-	
+
 	/**
 	 *
 	 * @returns The three.js object3D of this object
@@ -144,17 +141,13 @@ export abstract class Object2D {
 	getTHREEObject(): THREE.Object3D {
 		return this.tObject;
 	}
-	
+
 	/**
 	 * Updates the mesh with this object's data, for example colors and position.
 	 * This function should usually be the callback function while you're tweening a property of this object.
 	 */
 	protected updateMesh() {
-		this.tObject.position.set(
-			this.position.x,
-			this.position.y,
-			this.zPos
-		);
+		this.tObject.position.set(this.position.x, this.position.y, this.zPos);
 
 		let newScale = this.baseScale.value + this.highlightScalePlus.value;
 		this.tObject.scale.set(newScale, newScale, 1);

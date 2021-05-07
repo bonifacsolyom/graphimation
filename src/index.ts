@@ -8,13 +8,13 @@ window.onload = function () {
 	let scene2D = new Scene2D(window.innerWidth, window.innerHeight);
 	// let point = new Point2D(0, 0, "A");
 	// let point2 = new Point2D(0, 0, "B", new Color("blue"));
-	// let line = new Line2D(0, 0, 2, 2, "line");
+	let line = new Line2D(0, 0, 2, 2, "line");
 	let centerPoint = new Point2D(0, 0, "center", new Color("red"));
 	let vector = new Vector2D(-1, -1, 2, 1, "vector");
 
 	// scene2D.addObject(point);
 	// scene2D.addObject(point2);
-	// scene2D.addObject(line);
+	scene2D.addObject(line);
 	scene2D.addObject(centerPoint);
 	scene2D.addObject(vector);
 

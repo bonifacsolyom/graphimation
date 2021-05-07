@@ -5,13 +5,12 @@ import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { tween } from "../../utils/tweening-utils";
+import { AbstractLine2D } from "./abstract-line2d";
 
 /**
  * A class that represents a 2D line on the scene.
  */
-export class Line2D extends Object2D {
-	protected endPosition: Vector2;
-
+export class Line2D extends AbstractLine2D {
 	constructor(
 		x1: number,
 		y1: number,
@@ -20,18 +19,21 @@ export class Line2D extends Object2D {
 		name: string,
 		color: THREE.Color = new THREE.Color("white")
 	) {
-		super(x1, y1, name, color);
-		this.endPosition = new Vector2(x2, y2);
-		this.baseScale.value = 5;
-		this.higlightValues.growth = 3;
+		super(x1, y1, x2, y2, name, color);
+
 		let material = new LineMaterial({
 			color: color.getHex(),
 			linewidth: this.baseScale.value,
 		});
+		let geometry = this.createLineGeometry();
+		this.tObject = new Line2(geometry, material);
 
-		let relativeEndPoint = this.getRelativeEndPoint();
+		this.init();
+	}
 
+	protected createLineGeometry(): LineGeometry {
 		let geometry = new LineGeometry();
+		let relativeEndPoint = this.getRelativeEndPoint();
 		geometry.setPositions([
 			0,
 			0,
@@ -40,10 +42,7 @@ export class Line2D extends Object2D {
 			relativeEndPoint.y,
 			this.zPos,
 		]);
-
-		this.tObject = new Line2(geometry, material);
-
-		this.init();
+		return geometry;
 	}
 
 	protected updateMesh() {
@@ -53,23 +52,8 @@ export class Line2D extends Object2D {
 		(this.getMaterial() as LineMaterial).linewidth = newWidth;
 	}
 
-	/**
-	 * Used internally to set the resolution of the line so that it doesn't look distorted on non 1:1 aspect ratios.
-	 * There's probably no reason you'd want to call this function.
-	 */
 	_setResolution(width: number, height: number): void {
 		(this.getMaterial() as LineMaterial).resolution.set(width, height);
-	}
-
-	getCenter(): Vector2 {
-		return this.position
-			.clone()
-			.add(this.endPosition.clone())
-			.divideScalar(2);
-	}
-
-	changeColor(color: THREE.Color, time: number = 0): void {
-		tween(this.baseColor, color, this.updateMesh.bind(this), time);
 	}
 
 	protected getRelativeEndPoint(): Vector2 {

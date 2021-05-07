@@ -6,6 +6,7 @@ import { Object2D } from "./objects/object2d";
 import { Axis2D } from "./axis2d";
 import { Line2D } from "./objects/line2d";
 import { removeFromArray } from "../utils/misc-utils";
+import { AbstractLine2D } from "./objects/abstract-line2d";
 
 /**
  * A scene that you can add objects to.
@@ -90,7 +91,7 @@ export class Scene2D {
 	 * @param object The object to be added to the scene
 	 */
 	addObject(object: Object2D): void {
-		if (object instanceof Line2D)
+		if (object instanceof AbstractLine2D)
 			object._setResolution(this.width, this.height);
 
 		//We change the Z position of the newly added object so that it's in front of every other object
@@ -154,7 +155,10 @@ export class Scene2D {
 	 */
 	private checkPointerIntersect() {
 		this.raycaster.setFromCamera(this.pointer, this.camera.getCamera());
-		const intersects = this.raycaster.intersectObjects(this.scene.children);
+		const intersects = this.raycaster.intersectObjects(
+			this.scene.children,
+			true
+		);
 
 		//we check if the pointer is actually intersecting anything
 		if (intersects.length > 0) {

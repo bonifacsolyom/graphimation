@@ -15,7 +15,7 @@ export class Axis2D {
 		this.gridColor = new THREE.Color("gray");
 		this.gridShown = true;
 		this.increments = 1;
-		let line = new Line2D(1, 1, 5, 6, "line1");
+		// let line = new Line2D(1, 1, 5, 6, "line1");
 	}
 
 	update(cameraProperties: ICameraProperties) {}

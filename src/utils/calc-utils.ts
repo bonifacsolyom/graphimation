@@ -38,3 +38,16 @@ export function intersect(
 	);
 	return new Vector2(intersect_arr[0], intersect_arr[1]);
 }
+
+/**
+ * Returns the angle of a line in radians.
+ * @param startPoint
+ * @param endPoint
+ * @returns
+ */
+export function lineAngle(startPoint: Vector2, endPoint: Vector2) {
+	var dy = endPoint.y - startPoint.y;
+	var dx = endPoint.x - startPoint.x;
+	var theta = Math.atan2(dy, dx); // range (-PI, PI]
+	return theta;
+}

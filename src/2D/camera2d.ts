@@ -50,11 +50,12 @@ export class Camera2D {
 			1000
 		);
 
+		
 		this.position = new Vector2(0, 0);
 		this.zPos = 0;
 		this.zoom = new TweenableNumber(1);
 		this.rotationAngle = new TweenableNumber(0);
-		this.update();
+		this.update();		
 	}
 
 	getCamera(): OrthographicCamera {

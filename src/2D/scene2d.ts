@@ -42,7 +42,8 @@ export class Scene2D {
 		this.renderer.setSize(this.width, this.height);
 
 		//set up axises and grid
-		this.axis = new Axis2D();
+		this.axis = new Axis2D(this.scene);
+		this.axis._setResolution(this.width, this.height);
 
 		//TODO: remove
 		const gridHelper = new THREE.GridHelper(10, 10);

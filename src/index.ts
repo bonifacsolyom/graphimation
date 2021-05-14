@@ -8,7 +8,7 @@ window.onload = function () {
 	let scene2D = new Scene2D(window.innerWidth, window.innerHeight);
 	// let point = new Point2D(0, 0, "A");
 	// let point2 = new Point2D(0, 0, "B", new Color("blue"));
-	let line = new Line2D(0, 0, 2, 2, "line");
+	let line = new Line2D(0, 0, 2, 2, "line", new Color("red"));
 	let centerPoint = new Point2D(0, 0, "center", new Color("red"));
 	let vector = new Vector2D(-1, -1, 2, 1, "vector");
 
@@ -18,6 +18,10 @@ window.onload = function () {
 	scene2D.addObject(centerPoint);
 	scene2D.addObject(vector);
 
+	line.changeLine(new Vector2(-5, 3), new Vector2(3, -3), 5000);
+	// line.changePosition(new Vector2(-5, 3), 2000);
+	// line.changeEndPosition(new Vector2( 3, -3), 3000)
+
 	document.body.appendChild(scene2D.getDomElement());
 	// point.changeColor(new Color("red"), 2000);
 	// point.changePosition(new Vector2(5, 1), 2000);
@@ -26,7 +30,7 @@ window.onload = function () {
 	// point2.changePosition(new Vector2(-1, -1), 4000);
 	// point2.changeScale(6, 4000);
 
-	// scene2D.changeCameraPosition(new Vector2(2, 1), 5000);
-	// scene2D.changeCameraZoom(0.85, 5000);
-	// scene2D.changeCameraRotation(0, 20000);
+	scene2D.changeCameraPosition(new Vector2(2, 1), 5000);
+	scene2D.changeCameraZoom(1.5, 5000);
+	scene2D.changeCameraRotation(-45, 3000);
 };

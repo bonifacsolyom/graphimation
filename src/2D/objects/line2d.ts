@@ -24,29 +24,17 @@ export class Line2D extends AbstractLine2D {
 		let material = new LineMaterial({
 			color: color.getHex(),
 			linewidth: this.baseScale.value,
+			
 		});
-		let geometry = this.createLineGeometry();
+		let geometry = new LineGeometry();
+		this.setLineGeometry(geometry);
 		this.tObject = new Line2(geometry, material);
 
 		this.init();
 	}
 
-	protected createLineGeometry(): LineGeometry {
-		let geometry = new LineGeometry();
-		let relativeEndPoint = this.getRelativeEndPoint();
-		geometry.setPositions([
-			0,
-			0,
-			this.zPos,
-			relativeEndPoint.x,
-			relativeEndPoint.y,
-			this.zPos,
-		]);
-		return geometry;
-	}
-
 	protected updateMesh() {
-		this.tObject.position.set(this.position.x, this.position.y, this.zPos);
+		super.updateMesh();
 
 		let newWidth = this.baseScale.value + this.highlightScalePlus.value;
 		(this.getMaterial() as LineMaterial).linewidth = newWidth;

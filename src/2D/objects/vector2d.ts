@@ -12,6 +12,12 @@ export class Vector2D extends AbstractLine2D {
 	lineMesh: Line2;
 	headMesh: THREE.Mesh;
 
+	//we offset the line's end a little, so that it doesn't show up past the vector head
+	readonly lineOffset: number = 0.04;
+
+	//we offset the arrow's head, so when we shrink or grow the vector's scale, it looks better
+	private readonly headXOffset = 1;
+
 	constructor(
 		x1: number,
 		y1: number,
@@ -26,7 +32,8 @@ export class Vector2D extends AbstractLine2D {
 			color: color.getHex(),
 			linewidth: this.baseScale.value,
 		});
-		let lineGeometry = this.createLineGeometry();
+		let lineGeometry = new LineGeometry();
+		this.setLineGeometry(lineGeometry, 0.04);
 		this.lineMesh = new Line2(lineGeometry, lineMaterial);
 
 		this.headMesh = this.createHead();
@@ -43,24 +50,19 @@ export class Vector2D extends AbstractLine2D {
 		this.headMesh.userData = { containerObject: this };
 	}
 
-	protected createLineGeometry(): LineGeometry {
-		let geometry = new LineGeometry();
-		let relativeEndPoint = this.getRelativeEndPoint();
-		//We need to shorten the line a little, otherwise it shows up at the end of the arrow's head
-		geometry.setPositions([
-			0,
-			0,
-			this.zPos,
-			relativeEndPoint.x - relativeEndPoint.x / 25,
-			relativeEndPoint.y - relativeEndPoint.y / 25,
-			this.zPos,
-		]);
-		return geometry;
-	}
-
 	private createHead(): THREE.Mesh {
 		let geometry = new THREE.BufferGeometry();
-		let vertices = new Float32Array([-2, -1, -2, 0, 0, 0, -2, 1, -2]);
+		let vertices = new Float32Array([
+			-2 + this.headXOffset,
+			-1,
+			0,
+			0 + this.headXOffset,
+			0,
+			0,
+			-2 + this.headXOffset,
+			1,
+			0,
+		]);
 		vertices = vertices.map((val) => val / 25); //we shrink the triangle
 		geometry.setAttribute(
 			"position",
@@ -73,6 +75,8 @@ export class Vector2D extends AbstractLine2D {
 
 	private updateHead(): void {
 		let relativeEndPoint = this.getRelativeEndPoint();
+		relativeEndPoint.x -= (relativeEndPoint.x * this.headXOffset) / 21;
+		relativeEndPoint.y -= (relativeEndPoint.y * this.headXOffset) / 21;
 		this.headMesh.position.set(relativeEndPoint.x, relativeEndPoint.y, 0);
 		let angle = lineAngle(this.position, this.endPosition);
 		this.headMesh.setRotationFromAxisAngle(new Vector3(0, 0, 1), angle);
@@ -82,9 +86,11 @@ export class Vector2D extends AbstractLine2D {
 		this.updateHead();
 		this.tObject.position.set(this.position.x, this.position.y, this.zPos);
 
-		let newScale = this.baseScale.value + this.highlightScalePlus.value;
-		this.lineMesh.material.linewidth = newScale;
-		this.headMesh.scale.set(newScale, newScale, 1);
+		let newLineWidth = this.baseScale.value + this.highlightScalePlus.value;
+		let newHeadScale =
+			this.baseScale.value + this.highlightScalePlus.value / 3;
+		this.lineMesh.material.linewidth = newLineWidth;
+		this.headMesh.scale.set(newHeadScale, newHeadScale, 1);
 	}
 
 	_setResolution(width: number, height: number): void {

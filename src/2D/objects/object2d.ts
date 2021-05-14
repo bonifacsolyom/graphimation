@@ -25,7 +25,7 @@ export abstract class Object2D {
 	protected baseScale: TweenableNumber;
 
 	protected higlightValues = {
-		growth: 0.5,
+		growth: 0.25,
 		brightness: 5,
 	};
 
@@ -148,6 +148,7 @@ export abstract class Object2D {
 	 */
 	protected updateMesh() {
 		this.tObject.position.set(this.position.x, this.position.y, this.zPos);
+		
 
 		let newScale = this.baseScale.value + this.highlightScalePlus.value;
 		this.tObject.scale.set(newScale, newScale, 1);

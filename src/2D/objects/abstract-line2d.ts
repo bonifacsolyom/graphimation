@@ -19,10 +19,29 @@ export abstract class AbstractLine2D extends Object2D {
 		super(x1, y1, name, color);
 		this.endPosition = new Vector2(x2, y2);
 		this.baseScale.value = 4;
-		this.higlightValues.growth = 1;
+		this.higlightValues.growth = 2;
 	}
 
-	protected abstract createLineGeometry(): LineGeometry;
+	protected updateMesh() {
+		this.tObject.position.set(this.position.x, this.position.y, this.zPos);
+		this.setLineGeometry(this.getGeometry() as LineGeometry);
+	}
+
+	protected setLineGeometry(
+		geometry: LineGeometry,
+		endOffset: number = 0
+	): LineGeometry {
+		let relativeEndPoint = this.getRelativeEndPoint();
+		geometry.setPositions([
+			0,
+			0,
+			this.zPos,
+			relativeEndPoint.x - endOffset * relativeEndPoint.x,
+			relativeEndPoint.y - endOffset * relativeEndPoint.y,
+			this.zPos,
+		]);
+		return geometry;
+	}
 
 	/**
 	 * Used internally to set the resolution of the line so that it doesn't look distorted on non 1:1 aspect ratios.
@@ -39,6 +58,19 @@ export abstract class AbstractLine2D extends Object2D {
 
 	changeColor(color: THREE.Color, time: number = 0): void {
 		tween(this.baseColor, color, this.updateMesh.bind(this), time);
+	}
+
+	changeEndPosition(newEndPos: THREE.Vector2, time?: number) {
+		tween(this.endPosition, newEndPos, this.updateMesh.bind(this), time);
+	}
+
+	changeLine(
+		newBasePos: THREE.Vector2,
+		newEndPos: THREE.Vector2,
+		time: number = 0
+	): void {
+		this.changePosition(newBasePos, time);
+		this.changeEndPosition(newEndPos, time);
 	}
 
 	protected getRelativeEndPoint(): Vector2 {

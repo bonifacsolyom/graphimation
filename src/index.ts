@@ -1,16 +1,18 @@
-import { Scene2D } from "./2D/scene2d";
-import { Point2D } from "./2D/objects/point2d";
-import { Color, Vector2 } from "three";
-import { Line2D } from "./2D/objects/line2d";
-import { Vector2D } from "./2D/objects/vector2d";
+import { Scene2D } from './2D/scene2d';
+import { Point2D } from './2D/objects/point2d';
+import { Color, Vector2 } from 'three';
+import { Line2D } from './2D/objects/line2d';
+import { Vector2D } from './2D/objects/vector2d';
 
 window.onload = function () {
 	let scene2D = new Scene2D(window.innerWidth, window.innerHeight);
+	scene2D.enablePerformanceMonitor();
+
 	// let point = new Point2D(0, 0, "A");
 	// let point2 = new Point2D(0, 0, "B", new Color("blue"));
-	let line = new Line2D(0, 0, 2, 2, "line", new Color("red"));
-	let centerPoint = new Point2D(0, 0, "center", new Color("red"));
-	let vector = new Vector2D(-1, -1, 2, 1, "vector");
+	let line = new Line2D(0, 0, 2, 2, 'line', new Color('red'));
+	let centerPoint = new Point2D(0, 0, 'center', new Color('red'));
+	let vector = new Vector2D(-1, -1, 2, 1, 'vector');
 
 	// scene2D.addObject(point);
 	// scene2D.addObject(point2);
@@ -23,6 +25,7 @@ window.onload = function () {
 	// line.changeEndPosition(new Vector2( 3, -3), 3000)
 
 	document.body.appendChild(scene2D.getDomElement());
+	document.body.appendChild(scene2D.getPerfMonitorDomElement());
 	// point.changeColor(new Color("red"), 2000);
 	// point.changePosition(new Vector2(5, 1), 2000);
 	// point.changeScale(10, 2000);

@@ -7,6 +7,7 @@ import { Axis2D } from "./axis2d";
 import { Line2D } from "./objects/line2d";
 import { removeFromArray } from "../utils/misc-utils";
 import { AbstractLine2D } from "./objects/abstract-line2d";
+import Stats from "three/examples/jsm/libs/stats.module.js";
 
 /**
  * A scene that you can add objects to.
@@ -25,8 +26,11 @@ export class Scene2D {
 	/**
 	 * The Z value of the
 	 * Essentially the amount of objects that have been placed in the scene.
+	 * TODO: wtf is this comment, figure out what this actually is bc ion remember
 	 */
 	private objects: Object2D[];
+
+	private perfMonitor: any | undefined;
 
 	constructor(width: number, height: number) {
 		this.scene = new THREE.Scene();
@@ -132,12 +136,29 @@ export class Scene2D {
 		return this.renderer.domElement;
 	}
 
+	getPerfMonitorDomElement(): HTMLDivElement {
+		if (this.perfMonitor == undefined) {
+			throw new Error(
+				"perfMonitor object is undefined. Turn on performance monitoring with enablePerformanceMonitor() before trying to request its dom element."
+			);
+		}
+		return this.perfMonitor?.dom;
+	}
+
+	enablePerformanceMonitor(): void {
+		if (this.perfMonitor != undefined) return;
+		this.perfMonitor = Stats();
+		this.perfMonitor.showPanel(1);
+	}
+
 	/**
 	 * A function that's called every time the screen refreshes to update the scene
 	 */
 	private animate(): void {
 		//bind is a workaround for javascript's weird behavior when it comes to 'this'
 		requestAnimationFrame(this.animate.bind(this));
+
+		this.perfMonitor?.begin();
 
 		TWEEN.update(); //we update all our interpolations
 
@@ -146,6 +167,8 @@ export class Scene2D {
 		this.axis.update(this.camera.getCameraProperties());
 
 		this.renderer.render(this.scene, this.camera.getCamera());
+
+		this.perfMonitor?.end();
 	}
 
 	//A variable that stores the object that the user last pointed at
